@@ -154,7 +154,7 @@ def test_scalarInput():
 
 def test_cubeAndSpectrum():
     """
-    3D/1D test with an spectrum as the operator
+    14. 3D/1D test with an spectrum as the operator
     
     Create a 2D spectrum image the same size as the 
     frame in the cube.
