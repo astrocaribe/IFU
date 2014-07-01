@@ -5,7 +5,9 @@ from astropy.stats.funcs import sigma_clip
 from ifu_3d_collapse import *
 
 
-# ********************** Test Suite **********************
+# ======================================================
+#                       Test suite
+# ======================================================
 def test_sliceFalseSigma():
     """
     1. Setting sigma value to 'False'
@@ -48,3 +50,6 @@ def test_sliceSigma():
     
     result = ifu_3d_collapse(cube, sect=[15, 27], method='median', sigma=2.5)
     assert isinstance(result, np.ndarray)
+# ======================================================
+#                       Test suite
+# ======================================================    
