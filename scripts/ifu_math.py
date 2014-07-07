@@ -53,7 +53,7 @@ def ifu_math(array_in, operator, method):
     if isinstance(operator, np.ndarray):
         print('The operator dimensions are: {}'.format(np.shape(operator)))
     else:
-        print('Input has been converted to a numpy array.')
+        print('Input operator has been converted to a numpy array.')
         operator = np.array([operator])
         print('The operator dimensions are: {}'.format(np.shape(operator)))
     
