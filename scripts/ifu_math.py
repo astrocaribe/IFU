@@ -51,57 +51,57 @@ def ifu_math(array_in, operator, method):
     #print()
     
     if isinstance(operator, np.ndarray):
-        print('The operator dimensions are: {}'.format(np.shape(operator)))
+        print('(math): The operator dimensions are: {}'.format(np.shape(operator)))
     else:
-        print('Input operator has been converted to a numpy array.')
+        print('(math): Input operator has been converted to a numpy array.')
         operator = np.array([operator])
-        print('The operator dimensions are: {}'.format(np.shape(operator)))
+        print('(math): The operator dimensions are: {}'.format(np.shape(operator)))
     
     
     # Assure that the input array is a cube
     if array_in.ndim != 3:
-        print('The input array must be a cube (3 dimensions)!')
+        print('(math): The input array must be a cube (3 dimensions)!')
         return
     else:
-        print('Input array has {} dimensions.'.format(array_in.ndim))
+        print('(math): Input array has {} dimensions.'.format(array_in.ndim))
     
     # ... and check dimensions of input and operator arrays    
     if operator.ndim == 1 and operator.shape[0] == 1:
-        print('A scalar operation will take place.')
+        print('(math): A scalar operation will take place.')
     elif operator.shape == array_in.shape:
-        print('A 3D/3D operation will take place.')
+        print('(math): A 3D/3D operation will take place.')
     elif operator.ndim == 2 and (operator.shape[0] == array_in.shape[1] and operator.shape[1] == array_in.shape[2]):
-        print('A 3D/2D operation will take place.')
+        print('(math): A 3D/2D operation will take place.')
     elif operator.ndim == 1 and operator.shape[0] > 1:
         # Create a spectrum 'image' to conduct the basic arithmetic functions
-        print('A 3D/1D operation will take place.')
+        print('(math): A 3D/1D operation will take place.')
         spec_image = np.empty(array_in.shape)
         for ii in np.arange(array_in.shape[0]):
             spec_image[ii, :, :] = operator[ii]
             
         operator = spec_image
     else:
-        print('Dimension of input array and operator do not match!')
+        print('(math): Dimension of input array and operator do not match!')
     
     
     if method == 'add':
-        print('IFU add mode chosen...')
+        print('(math): IFU add mode chosen...')
         array_out = np.add(array_in, operator)            
     
     elif method == 'subtract':
-        print('IFU subtract mode chosen...')
+        print('(math): IFU subtract mode chosen...')
         array_out = np.subtract(array_in, operator)
     
     elif method == 'multiply':
-        print('IFU multiply mode chosen...')
+        print('(math): IFU multiply mode chosen...')
         array_out = np.multiply(array_in, operator)
     
     elif method == 'divide':
-        print('IFU divide mode chosen...')
+        print('(math): IFU divide mode chosen...')
         array_out = np.divide(array_in, operator)
         
     else:
-        print('There has been an input parse error, please check inputs again!')
+        print('(math): There has been an input parse error, please check inputs again!')
         array_out = np.array([])
     
     return array_out

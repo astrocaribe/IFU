@@ -2,7 +2,29 @@ from __future__ import print_function
 import numpy as np
 from astropy.io import fits
 from astropy.stats.funcs import sigma_clip
+
+import sys
+sys.path.append('./scripts/')
 from ifu_math import *
+
+def arrayCollapse(array_in, method):
+    
+    # Perform an array collapse
+    if method == 'sum':
+        print('(3d_collapse): Sum of extracted slices:')
+        collapsed_array = np.sum(array_in, axis=0)
+            
+    elif method == 'mean':
+        print('(3d_collapse): Mean of extracted slices:')
+        collapsed_array = np.mean(array_in, axis=0)
+    
+    elif method == 'median':
+        print('(3d_collapse): Median of extracted slices:')
+        collapsed_array = np.median(array_in, axis=0)
+        
+    return collapsed_array
+
+    
 
 def ifu_3d_collapse(array_in, sect=[0,0], method='sum', sigma=False):
     """
@@ -18,60 +40,36 @@ def ifu_3d_collapse(array_in, sect=[0,0], method='sum', sigma=False):
                 and median.
     """
     
+    print('***************** Dev Test *****************')
+    print('(ifu_3d_collapse): Developement test Vr. 0.2')
+    print('***************** Dev Test *****************')
+    
     # Extract the desired slice...
     slice_array = array_in[sect[0]:sect[1], :, :]
         
     # ... and perform the desired operation, based on input mode.
-    if method == 'sum':
-        print('Sum of extracted slices:')
-        collapsed_array = np.sum(slice_array, axis=0)
-            
-    elif method == 'mean':
-        print('Mean of extracted slices:')
-        collapsed_array = np.mean(slice_array, axis=0)
-    
-    elif method == 'median':
-        print('Median of extracted slices:')
-        collapsed_array = np.median(slice_array, axis=0)
-    
-
-    # Subtract the collapsed array from the input datacube
-    subtracted_array = ifu_math(slice_array, collapsed_array, method='subtract')
-    print()
-    print('Subtracted array shape:', subtracted_array.shape)
+    collapsed_array = arrayCollapse(slice_array, method=method)
     
     if sigma:
+        # Subtract the collapsed array from the input datacube
+        subtracted_array = ifu_math(slice_array, collapsed_array, method='subtract')
+        print()
+        print('(3d_collapse): Subtracted array shape:', subtracted_array.shape)
+        
         # Perform sigma-clip on subtracted cube
-        print('Clipping data...')
+        print('(3d_collapse): Clipping data...')
         clipped_array = sigma_clip(subtracted_array, sigma, iters=None, axis=0, copy=False)
         print()
-        print('Array shape:', clipped_array.shape)
+        print('(3d_collapse): Array shape:', clipped_array.shape)
         
         if np.array_equal(clipped_array, subtracted_array): print('Damn, arrays are exactly the same!')
         
-    else:
-        # Test statement:
-        clipped_array = subtracted_array
-        print('Array shape:', clipped_array.shape)
-    
-
-    # Now that we have the sigma mask, recalculate the collapse...
-    if method == 'sum':
-        print('Sum of extracted slices, part 2:')
-        collapsed_array = np.sum(clipped_array, axis=0)
-            
-    elif method == 'mean':
-        print('Mean of extracted slices, part 2:')
-        collapsed_array = np.mean(clipped_array, axis=0)
-    
-    elif method == 'median':
-        print('Median of extracted slices, part 2:')
-        collapsed_array = np.median(clipped_array, axis=0)
-
+        # Now that we have the sigma mask, recalculate the collapse...
+        collapsed_array = arrayCollapse(clipped_array, method)    
 
     
     # Return the collaped array
     #collapsed_array = clipped_array
     print()
-    print('Shape of returned array:', collapsed_array.shape)
+    print('(3d_collapse): Shape of returned array:', collapsed_array.shape)
     return collapsed_array
