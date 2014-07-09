@@ -1,4 +1,7 @@
 #Import necessary modules
+import sys
+sys.path.append('./scripts/')
+
 from ifu_math import *
 import numpy as np
 

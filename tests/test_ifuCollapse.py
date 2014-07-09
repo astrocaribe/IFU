@@ -2,6 +2,9 @@
 import numpy as np
 from astropy.io import fits
 from astropy.stats.funcs import sigma_clip
+
+import sys
+sys.path.append('./scripts/')
 from ifu_3d_collapse import *
 
 
