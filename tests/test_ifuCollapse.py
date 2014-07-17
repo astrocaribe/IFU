@@ -51,7 +51,7 @@ def test_sliceSigma():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_3d_collapse(cube, sect=[15, 27], method='median', sigma=2.5)
+    result = ifu_3d_collapse(cube, sect=[15, 27], method='median', sigma=100000.0)
     assert isinstance(result, np.ndarray)
 # ======================================================
 #                       Test suite
