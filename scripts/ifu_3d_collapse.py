@@ -50,22 +50,25 @@ def ifu_3d_collapse(array_in, sect=[0,0], method='sum', sigma=False):
     collapsed_array = arrayCollapse(slice_array, method=method)
     
     if sigma:
-        # Subtract the collapsed array from the input datacube
-    #    subtracted_array = ifu_math(slice_array, collapsed_array, method='subtract')
-    #    print()
-    #    print('(3d_collapse): Subtracted array shape:', subtracted_array.shape)
+        ## Subtract the collapsed array from the input datacube
+        #subtracted_array = ifu_math(slice_array, collapsed_array, method='subtract')
         
         # Perform sigma-clip on subtracted cube
         print('(3d_collapse): Clipping data...')
-        #clipped_array = sigma_clip(subtracted_array, sigma, iters=None, axis=0, copy=False)
-        clipped_array = sigma_clip(slice_array, sigma, iters=None, axis=0, copy=False)
+        clipped = sigma_clip(slice_array, sigma, iters=None, axis=0, copy=False)
         print()
         print('(3d_collapse): Array shape:', clipped_array.shape)
         
-    #    if np.array_equal(clipped_array, subtracted_array): print('Damn, arrays are exactly the same!')
-        if not np.array_equal(clipped_array, slice_array): 
-            raise TypeError
-            print('Damn, arrays are exactly the same!')    
+        
+        #******** INCOMPLETE! CONTINUE HERE! ***********
+        
+        # Compare the clipped sample to determine wether we need to 
+        # recalculate the collapse        
+        if np.array_equal(clipped.compress(), slice_array.flatten()): 
+            print('Arrays are exactly the same, no clipping required.')
+            collapsed_array = clipped.
+        else:
+            
         
         # Now that we have the sigma mask, recalculate the collapse...
         collapsed_array = arrayCollapse(clipped_array, method)    
