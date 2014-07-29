@@ -57,25 +57,28 @@ def ifu_3d_collapse(array_in, sect=[0,0], method='sum', sigma=False):
         print('(3d_collapse): Clipping data...')
         clipped = sigma_clip(slice_array, sigma, iters=None, axis=0, copy=False)
         print()
-        print('(3d_collapse): Array shape:', clipped_array.shape)
+        print('(3d_collapse): Array shape:', clipped.shape)
         
         
         #******** INCOMPLETE! CONTINUE HERE! ***********
         
         # Compare the clipped sample to determine wether we need to 
         # recalculate the collapse        
-        if np.array_equal(clipped.compress(), slice_array.flatten()): 
+        if np.array_equal(clipped.compressed(), slice_array.flatten()): 
             print('Arrays are exactly the same, no clipping required.')
-            collapsed_array = clipped.
         else:
-            
-        
-        # Now that we have the sigma mask, recalculate the collapse...
-        collapsed_array = arrayCollapse(clipped_array, method)    
+            # Now that we have the sigma mask, recalculate the collapse...            
+            temp_array = np.copy(clipped.data)
+            good = clipped.nonzero()
+            print()
+            print('good: ', good)
+            print()
+            collapsed_array = arrayCollapse(temp_array[good], method)
+            print(collapsed_array)
+            print('(3d_collapse): Collapsed shape:', collapsed_array.shape)
+            print('(3d_collapse): Original shape:', slice_array.shape)
 
     
-    # Return the collaped array
-    #collapsed_array = clipped_array
     print()
     print('(3d_collapse): Shape of returned array:', collapsed_array.shape)
     return collapsed_array
