@@ -1,7 +1,6 @@
 # Import necessary modules
 from __future__ import print_function
 import numpy as np
-#from astropy.stats.funcs import sigma_clip
 
 import sys
 sys.path.append('./scripts/')
@@ -9,8 +8,7 @@ from ifu_math import *
 
 def _arrayCollapse(array_in, method):
     """
-    Collapse a slice of a datacube, with a given mode, along the 
-    wavelength (z) slice.
+    Collapse a slice of a datacube, with a given mode, along the wavelength (z) slice.
     
     This is an internal function that will handle the actual cube
     collapse with a given method, for numpy.array types. 
@@ -69,17 +67,13 @@ def ifu_3d_collapse(array_in, sect=[], method='sum', sigma=False):
     This function handles both numpy.array (with no sigma clipping) 
     and numpy.ma masked arrays (with sigma clipping, from astropy.stast.funcs)
     
-    Keyword arguments:
-    array_in -- The input datacube array.
-    sect     -- The section of the datacube to collapse, in the 
-                form of [a, b], where a is the 1st slice boundary,
-                and b is the 2nd + 1 slice boundary. Can be omitted
-                to collapse entire z-axis.
-    method   -- The method of collapse. Available are sum, mean,
-                and median.
+    :param array_in: The input datacube array.
+    :param sect:     The section of the datacube to collapse, in the form of [a, b], 
+                     where a is the 1st slice boundary, and b is the 2nd + 1 slice boundary. 
+                     Can be omitted to collapse entire z-axis.
+    :param method:   The method of collapse. Available are sum, mean, and median.
                 
-    Output(s):
-    collapsedArray -- Collapsed image.
+    :returns: collapsedArray - Collapsed image.
     
     Example usage:
     
