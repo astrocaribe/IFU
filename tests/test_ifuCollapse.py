@@ -7,7 +7,6 @@ import sys
 sys.path.append('./scripts/')
 from ifu_3d_collapse import *
 
-
 # ======================================================
 #                       Test suite
 # ======================================================
@@ -18,24 +17,24 @@ def test_arrayCollapse():
     """
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
+    #result = _arrayCollapse(cube, method='mean')
     
-    result = arrayCollapse(cube, method='mean')
+    result = ifu_3d_collapse(cube, sect=[0, 29], method='mean')
     assert isinstance(result, np.ndarray)
     
     
-def test_arrayCollapse_list():
+def test_maskedCollapse():
     """
-    2. Test an arrayCollapse w/ a list of members.
+    2. Test the maskedCollapse function.
     """
     mu, sigma = 0, 15
     cube = np.random.normal(loc=mu, scale=sigma, size=(10, 20, 20))
-    clipped = sigma_clip(cube, sig=1, iters=None, copy=True)
     
-    good = clipped.nonzero()
+    #clipped = sigma_clip(cube, sig=1, iters=None, copy=True)
+    #collapsed_array = _maskedCollapse(clipped, method='median')
     
-    clipped = sigma_clip(cube[good], sig=1, iters=None, copy=True)
-    print(clipped)
-    assert isinstance(clipped, np.ndarray)
+    collapsed_array = ifu_3d_collapse(cube, sect=[0,9], method='median', sigma=1.)
+    assert isinstance(collapsed_array, np.ndarray)
     
 
 def test_sliceFalseSigma():
@@ -79,6 +78,17 @@ def test_sliceSigma():
     
     result = ifu_3d_collapse(cube, sect=[15, 27], method='median', sigma=2.5)
     assert isinstance(result, np.ndarray)
+    
+def test_emptySlice():
+    """
+    7. Test an empty input z-slice selection
+    """
+    
+    cube = np.arange(30*5*5).reshape(30, 5, 5)
+    
+    result = ifu_3d_collapse(cube, method='median', sigma=2.5)
+    assert isinstance(result, np.ndarray)
+    
 # ======================================================
 #                       Test suite
 # ======================================================    
