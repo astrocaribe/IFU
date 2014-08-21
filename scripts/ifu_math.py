@@ -8,38 +8,46 @@ def ifu_math(array_in, operator, method):
     Perform basic arithmetic tasks on 3D data using 1D, 2D, or
     3D data as input.
     
-    Keyword arguments:
-    array_in  -- The 3D input array.
+    Parameters
+    ----------
+    array_in : numpy array
+               The 3D input array.
     
-    operator  -- The array that is to operate on the input array
-                 (array_in). Can be a scalar, list, image, or
-                 datacube.
+    operator : int or numpy array
+               The array that is to operate on the input array
+               (array_in). Can be a scalar, list, image, or
+               datacube.
                 
-    method    -- Calculation method. Available are add, subtract,
-                 multiply, and divide.
+    method : string
+             Calculation `method`. Available are add, subtract,
+             multiply, and divide.
     
     
-    Output(s):
-    array_out -- The list, image or cube subtracted output array.
+    Returns
+    -------
+    array_out : numpy array
+                The list, image or cube subtracted output array.
     
-    Example usage:
-    
-        1. >> ifu_math(cube, 1000., method='subtract')
-        
-        Subtract the scalar value of 1000. from entire cube array.
-        
-        2. >> ifu_math(cube, image, method='subtract')
-        
-        Subtract an image of dimensions [x, y] from a cube array in
-        the wavelength (z) plane. Image dimensions x, y] must match
-        those of the input cube array.
-        
-        3. >> ifu_math(cube1, cube2, method='divide')
-        
-        Divive cube1 array by the contents of cube2 array, value for
-        value. Arrays of both cubes must be identical.
-        
+
+    >>numpy.add(1,2)
     """    
+
+
+#    >>ifu_math(cube, 1000., method='subtract')
+#        
+#    Subtract the scalar value of 1000. from entire cube array.
+#        
+#
+#    >> ifu_math(cube, image, method='subtract')
+#        
+#        Subtract an image of dimensions [x, y] from a cube array in
+#        the wavelength (z) plane. Image dimensions x, y] must match
+#        those of the input cube array.
+#        
+#        3. >> ifu_math(cube1, cube2, method='divide')
+#        
+#        Divide cube1 array by the contents of cube2 array, value for
+#        value. Arrays of both cubes must be identical.
     
     import numpy as np
     
