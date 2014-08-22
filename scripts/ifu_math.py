@@ -10,45 +10,43 @@ def ifu_math(array_in, operator, method):
     
     Parameters
     ----------
-    array_in : numpy array
+    array_in : numpy.ndarray
                The 3D input array.
     
-    operator : int or numpy array
+    operator : int or numpy.ndarray
                The array that is to operate on the input array
                (array_in). Can be a scalar, list, image, or
                datacube.
                 
-    method : string
-             Calculation `method`. Available are add, subtract,
-             multiply, and divide.
+    method : {'add', 'subtract', 'multiply', 'divide'}
+             Array calculation mrthod.
     
     
     Returns
     -------
-    array_out : numpy array
+    array_out : numpy.ndarray
                 The list, image or cube subtracted output array.
     
-
-    >>numpy.add(1,2)
+    
+    Example Usage:
+    
+        1. >> ifu_math(cube, 1000., method='subtract')
+        
+              Subtract the scalar value of 1000. from entire 
+              cube array.
+        
+        2. >> ifu_math(cube, image, method='subtract')
+        
+              Subtract an image of dimensions [x, y] from a cube 
+              array in the wavelength (z) plane. Image dimensions 
+              [x, y] must match those of the input cube array.
+        
+        3. >> ifu_math(cube1, cube2, method='divide')
+        
+              Divide cube1 array by the contents of cube2 array, 
+              value for value. Arrays of both cubes must be identical.
     """    
 
-
-#    >>ifu_math(cube, 1000., method='subtract')
-#        
-#    Subtract the scalar value of 1000. from entire cube array.
-#        
-#
-#    >> ifu_math(cube, image, method='subtract')
-#        
-#        Subtract an image of dimensions [x, y] from a cube array in
-#        the wavelength (z) plane. Image dimensions x, y] must match
-#        those of the input cube array.
-#        
-#        3. >> ifu_math(cube1, cube2, method='divide')
-#        
-#        Divide cube1 array by the contents of cube2 array, value for
-#        value. Arrays of both cubes must be identical.
-    
     import numpy as np
     
     # Check to see if operator is a scalar (int or float); convert to numpy
