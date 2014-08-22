@@ -11,12 +11,13 @@ def frame_convert(frame, cals):
     frame : int
         Datacube frame to convert to a wavelength.
     
-    cals : tuple of ints
-        Calibration constants for the given datacube.
+    cals : tuple of floats
+           Calibration values for the input datacube; 
+           (crpix, crval, crdelt).
         
     Returns
     -------
-    wave : float
+    wavelength : float
         The converted wavelength of the datacube frame.
         
     Raises
@@ -25,22 +26,23 @@ def frame_convert(frame, cals):
     """
     
     # Calculate the frame conversion
-    wave = (frame - cals[0]) * cals[2] + cals[1]
+    wavelength = (frame - cals[0]) * cals[2] + cals[1]
     
-    return wave # [format(z, '.3f') for z in wave] #
+    return wavelength
 
-def wave_convert(wave, cals):
+def wave_convert(wavelength, cals):
     """
     Convert the wavelength to a frame using a starting value and 
     delta (in microns).
     
     Parameters
     ----------
-    wave : float
+    wavelength : float
         The wavelength to convert to a datacube frame.
     
-    cals : tuple of ints
-        Calibration constants for the given datacube.
+    cals : tuple of floats
+           Calibration values for the input datacube; 
+           (crpix, crval, crdelt).
         
     Returns
     -------
@@ -56,7 +58,7 @@ def wave_convert(wave, cals):
     from numpy import int
 
     # Calculate the wavelength conversion
-    frame = cals[0] + ((wave - cals[1]) / cals[2])
+    frame = cals[0] + ((wavelength - cals[1]) / cals[2])
     
     frame = np.int(np.round(frame))
     return frame
