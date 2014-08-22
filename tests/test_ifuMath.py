@@ -122,7 +122,7 @@ def test_unsupportedOperator():
 def test_cubeMinImage():
     """
     11. 3D/2D math operation
-    Subtracting an image from a cube
+    Subtracting an image from a cube.
     """
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
