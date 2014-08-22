@@ -13,6 +13,19 @@ def _arrayCollapse(array_in, method):
     This is an internal function that will handle the actual cube
     collapse with a given method, for numpy.array types. 
     Specifically for computed collapse without sigma clipping.
+    
+    Parameters
+    ----------
+    array_in : numpy.ndarray
+               Input array over which to calculate the collapse.
+    
+    method : string
+             Passed from the main function call.
+             
+    Returns
+    -------
+    collapsed_array : numpy.ndarray
+                      The collapsed array with the desired method.
     """
         
     # Perform an numpy.array collapse along the z-axis
@@ -31,6 +44,7 @@ def _arrayCollapse(array_in, method):
     # Returns an array of type numpy.array    
     return collapsed_array
 
+
 def _maskedCollapse(array_in, method):
     """
     Collapse a slice of a datacube, with a given mode, along the 
@@ -39,6 +53,19 @@ def _maskedCollapse(array_in, method):
     This is an internal function that will handle the actual cube
     collapse with a given method, for numpy.ma (MaskedArray) types. 
     Specifically for computed collapse with sigma clipping.
+
+    Parameters
+    ----------
+    array_in : numpy array
+               Input array over which to calculate the collapse.
+    
+    method : string
+             Passed from the main function call.
+             
+    Returns
+    -------
+    collapsed_array.data : numpy array
+                           The collapsed array with the desired method.
     """    
     import numpy.ma as ma
     
@@ -67,13 +94,24 @@ def ifu_3d_collapse(array_in, sect=[], method='sum', sigma=False):
     This function handles both numpy.array (with no sigma clipping) 
     and numpy.ma masked arrays (with sigma clipping, from astropy.stast.funcs)
     
-    :param array_in: The input datacube array.
-    :param sect:     The section of the datacube to collapse, in the form of [a, b], 
-                     where a is the 1st slice boundary, and b is the 2nd + 1 slice boundary. 
-                     Can be omitted to collapse entire z-axis.
-    :param method:   The method of collapse. Available are sum, mean, and median.
+    Parameters
+    ----------
+    array_in : numpy.ndarray
+               The input datacube array.
+    sect :  The section of the datacube to collapse, in the form of [a, b], 
+            where a is the 1st slice boundary, and b is the 2nd + 1 slice boundary. 
+            Can be omitted to collapse entire z-axis.
+            
+    method : {'median', 'sum', 'mean'}
+             The method of collapse.
+             
+    sigma : bool, optional
+            Flag for wether to perform sigma clipping or not (default is False).
                 
-    :returns: collapsedArray - Collapsed image.
+    Returns
+    -------
+    collapsedArray : numpy.ndarray
+                     Collapsed image.
     
     Example usage:
     
