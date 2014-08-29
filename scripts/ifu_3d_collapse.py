@@ -86,7 +86,7 @@ def _maskedCollapse(array_in, method):
     return collapsed_array.data
 
 
-def ifu_3d_collapse(array_in, sect=[], method='sum', sigma=False):
+def ifu_3d_collapse(array_in, region=None, method='sum', sigma=False):
     """
     Collapse a slice of a datacube, with a given mode, along the 
     wavelength slice.
@@ -98,9 +98,9 @@ def ifu_3d_collapse(array_in, sect=[], method='sum', sigma=False):
     ----------
     array_in : numpy.ndarray
                The input datacube array.
-    sect :  The section of the datacube to collapse, in the form of [a, b], 
-            where a is the 1st slice boundary, and b is the 2nd + 1 slice boundary. 
-            Can be omitted to collapse entire z-axis.
+    region :  The region of the datacube to collapse, in the form of [a, b], 
+              where a is the 1st slice boundary, and b is the 2nd + 1 slice boundary. 
+              Can be omitted to collapse entire z-axis.
             
     method : {'median', 'sum', 'mean'}
              The method of collapse.
@@ -115,7 +115,7 @@ def ifu_3d_collapse(array_in, sect=[], method='sum', sigma=False):
     
     Example usage:
     
-        1. >> result = ifu_3d_collapse(cube, sect=[1000, 1999], method='median')
+        1. >> result = ifu_3d_collapse(cube, region=[1000, 1999], method='median')
         
         Median collapse cube from z-axis frames 1000-2000.
         
@@ -126,12 +126,12 @@ def ifu_3d_collapse(array_in, sect=[], method='sum', sigma=False):
     """
     
     # Extract the desired slice...
-    if sect == []:
+    if not region:
         print('(3d_collapse): Entire z-axis will be collapsed!')
         slice_array = array_in
     else:
-        print('(3d_collapse): z-axis collapse limits: ', sect)
-        slice_array = array_in[sect[0]:sect[1], :, :]
+        print('(3d_collapse): z-axis collapse limits: ', region)
+        slice_array = array_in[region[0]:region[1], :, :]
         
     # ... and perform the desired operation, based on input mode.
     collapsed_array = _arrayCollapse(slice_array, method=method)
