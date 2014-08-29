@@ -18,11 +18,11 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     array_in : numpy.ndarray
                Input datacube.
                
-    spaxel : tuple of ints
+    spaxel : list of ints, [[x, y]] or [[x1, y1], [x2, y2] ... [xn, yn]]
              The spaxel(s) (i.e., the [x, y] pixel location) for 
              which to perform the extraction.
              
-    cals : tuple of floats
+    cals : list of floats
            Calibration values for the input datacube; 
            (crpix, crval, crdelt).
            
@@ -47,7 +47,15 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
         
     # Convert spaxel(s) to numpy arrays to evaluate how many are input, 
     # and unpack into seperate values
-    npSpaxels = np.array(spaxel)
+    spaxelList = np.array(spaxel)
+    if spaxelList.shape[1] > 2:
+        print('Input spaxels not in the right form. Resizing....')
+        npSpaxels = np.resize(spaxelList, (spaxelList.shape[1], spaxelList.shape[0]))
+        print('Resizing done!')
+        print()
+    else:
+        npSpaxels = spaxelList
+    
     x, y = [], []
     for (ii, jj) in npSpaxels:
         x.append(ii)
@@ -57,17 +65,18 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     print('x Spaxels: ', x)
     print('y Spaxels: ', y)    
     
-    # If too many spaxels entered, display a message (limit 3)
-    if npSpaxels.shape[0] > 3:
+    # If too many spaxels entered, display a message (limit x)
+    specLimit = 3
+    if npSpaxels.shape[0] > specLimit:
         print('Too many spectra entered! Maximum of 3 will be processed...')
         
-    if npSpaxels.shape[1] > 2:
-        print('Spaxel values must be entered in pairs! (e.g. spaxel=[[x1, y1], [x2, y2]])')
-        return None
+    #if npSpaxels.shape[1] > 2:
+    #    print('Spaxel values must be entered in pairs! (e.g. spaxel=[[x1, y1], [x2, y2]])')
+    #    return None
                 
     # Extract spectrum at given spaxel, trimming from beginning/end of spectrum
     #spectrum = array_in[trim:-trim, spaxel[1], spaxel[0]]
-    spectrum = array_in[trim:-trim, y[:3], x[:3]]
+    spectrum = array_in[trim:-trim, y[:specLimit], x[:specLimit]]
     if spectrum.shape[1] == 1:
         print('Shape change!!!!')
         spectrum = spectrum[:, 0]
@@ -76,18 +85,37 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     spec_wave = frame_convert(spec_frame, cals)
         
     print('Spectrum.shape: ', spectrum.shape)
+    print('Spec_frame.shape: ', spec_frame.shape)
+    print('Spec_wave.shape: ', spec_wave.shape)
     
     # If a continuum-subtracted spectrum is required, calculate
     # and return...
     if continuum:        
         #compute an estimate for the continuum
-        p = np.polyfit(spec_wave, spectrum, 1)
-        print('Gradient and y-intercept:')
-        print(p)
-        continuum = p[0] * spec_wave + p[1]
+        #p = np.polyfit(spec_wave, spectrum, 1)
         
+        pTemp = np.polyfit(spec_wave, spectrum, 1)
+        print('(continuum) pTemp.shape: ', pTemp.shape)
+        
+        if spectrum.ndim == 1:
+            p = pTemp
+            continuum = p[0] * spec_wave + p[1]
+        else:
+            p = np.resize(pTemp, (pTemp.shape[1], pTemp.shape[0]))
+            print('(continuum) spec_wave.shape: ', spec_wave.shape)
+            print('(continuum) p.shape: ', p.shape)
+            continuum = np.zeros(spectrum.shape)
+            for rec, (p0, p1) in enumerate(p):
+                print('polyfit test...')
+                continuum[:, rec] = p0 * spec_wave + p1
+        
+
         print('(continuum) p.shape: ', p.shape)
-        print('(continuum) p: ', p[0], p[1], p)
+        print('(continuum) p: ', p)        
+        print('Gradient and y-intercept:')
+        #continuum = p[:, 0] * spec_wave + p[:, 1]
+        
+
         print('(continuum) Continuum shape: ', continuum.shape)
         print('(continuum) Spectrum.shape: ', spectrum.shape)
         print('(continuum) Spectrum type: ', type(spectrum))
