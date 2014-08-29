@@ -66,7 +66,7 @@ def test_extractPairs():
     """
     5. Test the spectrum extraction function on a range of spaxels.
     
-    Test passes, but as pairs of tuples (list of [[x1, y1], [x2, y2] ...[xn, yn]]).
+    Test passes, but as pairs of lists (list of [[x1, y1], [x2, y2] ...[xn, yn]]).
     """
     
     testSpec = ifu_1d_spectrum(cube, [[27, 27], [33, 33], [15, 30]], cals, trim=100, continuum=False, display=False)
@@ -77,7 +77,7 @@ def test_extractPairsContinuum():
     """
     6. Test the spectrum extraction function on a range of spaxels, with continuum extraction.
     
-    Test passes, but as pairs of tuples (list of [[x1, y1], [x2, y2] ...[xn, yn]]).
+    Test passes, but as pairs of lists (list of [[x1, y1], [x2, y2] ...[xn, yn]]).
     Continuum extraction is performed.
     """
     
