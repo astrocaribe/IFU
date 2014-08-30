@@ -50,7 +50,8 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     spaxelList = np.array(spaxel)
     if spaxelList.shape[1] > 2:
         print('Input spaxels not in the right form. Resizing....')
-        npSpaxels = np.resize(spaxelList, (spaxelList.shape[1], spaxelList.shape[0]))
+        #npSpaxels = np.resize(spaxelList, (spaxelList.shape[1], spaxelList.shape[0]))
+        npSpaxels = spaxelList.T
         print('Resizing done!')
         print()
     else:
@@ -97,9 +98,15 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     if display:
         
         fig, ax = plt.subplots(figsize=(12, 4))
+
+        if len(x) > 1:
+            for rec, pos in enumerate(npSpaxels):
+                ax.plot(spec_wave, spectrum[:, rec], label='[{}, {}]'.format(pos[0], pos[1]))
+        else:
+            ax.plot(spec_wave, spectrum, label='[{}, {}]'.format(x[0], y[0]))
+        
         
         ax.set_xlim(spec_wave[0], spec_wave[-1])
-        ax.plot(spec_wave, spectrum)
         ax.set_xlabel('Wavelength ($\mu m$)')
         ax.set_ylabel('Counts (D/n)')
         
@@ -108,6 +115,9 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
         ticks = spec_frame[::100]
         ax_twin.set_xticks(ticks, minor=True)
         ax_twin.set_xlabel('Datacube Frame')
+        
+        # Now add the legend with some customizations.
+        ax.legend(loc='best', numpoints = 1, shadow=True)
         
     # Create an empty multidim array to store the spectral data
     # (wavelength and flux)
