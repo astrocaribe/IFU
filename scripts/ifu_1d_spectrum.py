@@ -60,72 +60,39 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     for (ii, jj) in npSpaxels:
         x.append(ii)
         y.append(jj)
-       
-    print('Spaxel shape! ', npSpaxels.shape)
-    print('x Spaxels: ', x)
-    print('y Spaxels: ', y)    
     
     # If too many spaxels entered, display a message (limit x)
     specLimit = 3
     if npSpaxels.shape[0] > specLimit:
         print('Too many spectra entered! Maximum of 3 will be processed...')
-        
-    #if npSpaxels.shape[1] > 2:
-    #    print('Spaxel values must be entered in pairs! (e.g. spaxel=[[x1, y1], [x2, y2]])')
-    #    return None
-                
+
+
     # Extract spectrum at given spaxel, trimming from beginning/end of spectrum
     #spectrum = array_in[trim:-trim, spaxel[1], spaxel[0]]
     spectrum = array_in[trim:-trim, y[:specLimit], x[:specLimit]]
     if spectrum.shape[1] == 1:
-        print('Shape change!!!!')
         spectrum = spectrum[:, 0]
     
     spec_frame = np.arange(len(spectrum)) + trim    
     spec_wave = frame_convert(spec_frame, cals)
         
-    print('Spectrum.shape: ', spectrum.shape)
-    print('Spec_frame.shape: ', spec_frame.shape)
-    print('Spec_wave.shape: ', spec_wave.shape)
-    
     # If a continuum-subtracted spectrum is required, calculate
     # and return...
-    if continuum:        
-        #compute an estimate for the continuum
-        #p = np.polyfit(spec_wave, spectrum, 1)
-        
+    if continuum:                
         pTemp = np.polyfit(spec_wave, spectrum, 1)
-        print('(continuum) pTemp.shape: ', pTemp.shape)
         
         if spectrum.ndim == 1:
             p = pTemp
             continuum = p[0] * spec_wave + p[1]
         else:
-            p = np.resize(pTemp, (pTemp.shape[1], pTemp.shape[0]))
-            print('(continuum) spec_wave.shape: ', spec_wave.shape)
-            print('(continuum) p.shape: ', p.shape)
+            p = pTemp.T
             continuum = np.zeros(spectrum.shape)
-            for rec, (p0, p1) in enumerate(p):
-                print('polyfit test...')
-                continuum[:, rec] = p0 * spec_wave + p1
-        
+            for rec, pfit in enumerate(p):
+                continuum[:, rec] = pfit[0] * spec_wave + pfit[1]
 
-        print('(continuum) p.shape: ', p.shape)
-        print('(continuum) p: ', p)        
-        print('Gradient and y-intercept:')
-        #continuum = p[:, 0] * spec_wave + p[:, 1]
-        
-
-        print('(continuum) Continuum shape: ', continuum.shape)
-        print('(continuum) Spectrum.shape: ', spectrum.shape)
-        print('(continuum) Spectrum type: ', type(spectrum))
-        
-        #compute continuum-subtracted spectrum
-        #z = spectrum - y
+        # Compute continuum-subtracted spectrum
         spectrum = spectrum - continuum
         
-        print('(continuum2) Spectrum.shape: ', spectrum.shape)
-    
     # Display spectrum if set (DEBUG)
     if display:
         
@@ -144,9 +111,7 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
         
     # Create an empty multidim array to store the spectral data
     # (wavelength and flux)
-    # If multiple spaxles are entered, only the first is returned!
-    print('(after:) Spetrum.shape: ', spectrum.shape)
-    
+    # If multiple spaxles are entered, only the first is returned!    
     spectrum_out = np.empty(2*spectrum.shape[0]).reshape(2, spectrum.shape[0])
     spectrum_out[0, :] = spec_wave
     #spectrum_out[1, :] = spectrum
