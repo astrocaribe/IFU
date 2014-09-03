@@ -40,20 +40,17 @@ def lineMeasure(spectrum, region=[], display=False):
     """
     # Initialize the output spectrum
     # If zero, then something went wrong!
-    inSpectrum = 0
+    line = 0
     
-    idx = np.where(spectrum[1, :] == region[0])
-    print(idx[0])
+    idx, = np.where(spectrum[1, :] == region[0])
+    print(idx, type(idx))
     
-    if idx[0] == []:
+    if len(idx) == 0:
         print('Input range is outside allowed!')
-        return inSpectrum
+        return line
     else:
-        idx = idx[0][0]
         idx_range = region[1] - region[0]        
         
-
-    #print(spectrum[2, idx[0][0]:idx+idx_range])
     
     if spectrum.shape[0] != 3:
         print("Spectrum must be of shape (3, n), when n = number of wavelengths/counts in spectrum!")
@@ -63,10 +60,10 @@ def lineMeasure(spectrum, region=[], display=False):
     if len(region) == 2:
         inSpectrum = spectrum[2, idx:idx+idx_range]
     else:
-        print('The spectral region must be entered as [a, b], \
-        where a and b are the lower/upper limits!')
+        print('The spectral region must be entered as [a, b], where a and b are the lower/upper limits!')
     
-    return inSpectrum
+    line = inSpectrum
+    return line
 
 
 if __name__ == "__main__":
