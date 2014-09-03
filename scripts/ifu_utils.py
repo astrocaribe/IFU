@@ -11,7 +11,7 @@ def frame_convert(frame, cals):
     frame : int
         Datacube frame to convert to a wavelength.
     
-    cals : tuple of floats
+    cals : list of floats
            Calibration values for the input datacube; 
            (crpix, crval, crdelt).
         
@@ -40,7 +40,7 @@ def wave_convert(wavelength, cals):
     wavelength : float
         The wavelength to convert to a datacube frame.
     
-    cals : tuple of floats
+    cals : list of floats
            Calibration values for the input datacube; 
            (crpix, crval, crdelt).
         
