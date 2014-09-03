@@ -2,7 +2,7 @@
 import sys
 sys.path.append('./scripts/')
 
-from ifu_math import *
+from ifu_math import math
 import numpy as np
 
 # ======================================================
@@ -15,8 +15,8 @@ def test_addIntConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 10, 'add')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 10, 'add')
+    assert result.shape == cube.shape
     
     
 def test_addFloatConstant():
@@ -26,8 +26,8 @@ def test_addFloatConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 5., 'add')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 5., 'add')
+    assert result.shape == cube.shape
     
     
 def test_subIntConstant():
@@ -37,8 +37,8 @@ def test_subIntConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 10, 'subtract')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 10, 'subtract')
+    assert result.shape == cube.shape
     
     
 def test_subFloatConstant():
@@ -48,8 +48,8 @@ def test_subFloatConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 5., 'subtract')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 5., 'subtract')
+    assert result.shape == cube.shape
 
     
 def test_mulIntConstant():
@@ -59,8 +59,8 @@ def test_mulIntConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 10, 'multiply')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 10, 'multiply')
+    assert result.shape == cube.shape
 
     
 def test_mulFloatConstant():
@@ -70,8 +70,8 @@ def test_mulFloatConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 5., 'multiply')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 5., 'multiply')
+    assert result.shape == cube.shape
 
     
 def test_divIntConstant():
@@ -81,8 +81,8 @@ def test_divIntConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 10, 'divide')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 10, 'divide')
+    assert result.shape == cube.shape
     
     
 def test_divFloatConstant():
@@ -92,8 +92,8 @@ def test_divFloatConstant():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 5., 'divide')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 5., 'divide')
+    assert result.shape == cube.shape
     
 
 def test_unsupportedMethod():
@@ -103,8 +103,8 @@ def test_unsupportedMethod():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 5., 'dummy')
-    assert isinstance(result, np.ndarray)
+    result = math(cube, 5., 'dummy')
+    assert result.shape == cube.shape
 
     
 def test_unsupportedOperator():
@@ -115,7 +115,7 @@ def test_unsupportedOperator():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, 'r', 'add')
+    result = math(cube, 'r', 'add')
     assert isinstance(result, np.ndarray), 'Operator cannot be a string!'
 
     
@@ -128,7 +128,7 @@ def test_cubeMinImage():
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     image = cube[15, :, :]
     
-    result = ifu_math(cube, image, 'subtract')
+    result = math(cube, image, 'subtract')
     assert isinstance(result, np.ndarray)
     
       
@@ -140,7 +140,7 @@ def test_diffDims():
     cube = np.arange(30*3*10).reshape(30, 3, 10)
     image = cube[15, :, :].reshape(5, 6)
     
-    result = ifu_math(cube, image, 'divide')
+    result = math(cube, image, 'divide')
     assert isinstance(result, np.ndarray)
 
 
@@ -151,7 +151,7 @@ def test_scalarInput():
     
     in_list = np.arange(10)
     
-    result = ifu_math(in_list, 10, 'add')
+    result = math(in_list, 10, 'add')
     assert isinstance(result, np.ndarray)
 
 
@@ -166,7 +166,7 @@ def test_cubeAndSpectrum():
     spectrum = np.random.randint(0, 10, size=(30))
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_math(cube, spectrum, method='subtract')    
+    result = math(cube, spectrum, method='subtract')    
     assert isinstance(result, np.ndarray)
 
 # ======================================================

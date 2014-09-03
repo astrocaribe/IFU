@@ -5,7 +5,7 @@ from astropy.stats.funcs import sigma_clip
 
 import sys
 sys.path.append('./scripts/')
-from ifu_3d_collapse import *
+from ifu_3d_collapse import collapse
 
 # ======================================================
 #                       Test suite
@@ -19,7 +19,7 @@ def test_arrayCollapse():
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     #result = _arrayCollapse(cube, method='mean')
     
-    result = ifu_3d_collapse(cube, region=[0, 29], method='mean')
+    result = collapse(cube, region=[0, 29], method='mean')
     assert isinstance(result, np.ndarray)
     
     
@@ -33,7 +33,7 @@ def test_maskedCollapse():
     #clipped = sigma_clip(cube, sig=1, iters=None, copy=True)
     #collapsed_array = _maskedCollapse(clipped, method='median')
     
-    collapsed_array = ifu_3d_collapse(cube, region=[0,9], method='median', sigma=1.)
+    collapsed_array = collapse(cube, region=[0,9], method='median', sigma=1.)
     assert isinstance(collapsed_array, np.ndarray)
     
 
@@ -44,7 +44,7 @@ def test_sliceFalseSigma():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_3d_collapse(cube, region=[15, 27], method='median', sigma=False)
+    result = collapse(cube, region=[15, 27], method='median', sigma=False)
     assert isinstance(result, np.ndarray)
     
 def test_sliceOmitSigma():
@@ -54,7 +54,7 @@ def test_sliceOmitSigma():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_3d_collapse(cube, region=[15, 27], method='median')
+    result = collapse(cube, region=[15, 27], method='median')
     assert isinstance(result, np.ndarray)
 
 
@@ -65,7 +65,7 @@ def test_sliceZeroSigma():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_3d_collapse(cube, region=[15, 27], method='median', sigma=0)
+    result = collapse(cube, region=[15, 27], method='median', sigma=0)
     assert isinstance(result, np.ndarray)
     
 
@@ -76,7 +76,7 @@ def test_sliceSigma():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_3d_collapse(cube, region=[15, 27], method='median', sigma=2.5)
+    result = collapse(cube, region=[15, 27], method='median', sigma=2.5)
     assert isinstance(result, np.ndarray)
     
 def test_emptySlice():
@@ -86,7 +86,7 @@ def test_emptySlice():
     
     cube = np.arange(30*5*5).reshape(30, 5, 5)
     
-    result = ifu_3d_collapse(cube, method='median', sigma=2.5)
+    result = collapse(cube, method='median', sigma=2.5)
     assert isinstance(result, np.ndarray)
     
 # ======================================================
