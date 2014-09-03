@@ -3,7 +3,7 @@ import numpy as np
 from astropy.io import fits
 
 # Basic ifu math mode
-def ifu_math(array_in, operator, method):
+def math(array_in, operator, method):
     """
     Perform basic arithmetic tasks on 3D data using 1D, 2D, or
     3D data as input.
@@ -30,18 +30,21 @@ def ifu_math(array_in, operator, method):
     
     Example Usage:
     
-        1. >> ifu_math(cube, 1000., method='subtract')
+        1. >> from ifu_math import math
+           >> math(cube, 1000., method='subtract')
         
               Subtract the scalar value of 1000. from entire 
               cube array.
         
-        2. >> ifu_math(cube, image, method='subtract')
+        2. >> from ifu_math import math
+           >> math(cube, image, method='subtract')
         
               Subtract an image of dimensions [x, y] from a cube 
               array in the wavelength (z) plane. Image dimensions 
               [x, y] must match those of the input cube array.
         
-        3. >> ifu_math(cube1, cube2, method='divide')
+        3. >> from ifu_math import math
+           >> ifu_math(cube1, cube2, method='divide')
         
               Divide cube1 array by the contents of cube2 array, 
               value for value. Arrays of both cubes must be identical.
@@ -50,12 +53,7 @@ def ifu_math(array_in, operator, method):
     import numpy as np
     
     # Check to see if operator is a scalar (int or float); convert to numpy
-    # list to allow shape determination
-    
-    #print()
-    #print(operator, type(operator))
-    #print()
-    
+    # list to allow shape determination        
     if isinstance(operator, np.ndarray):
         print('(math): The operator dimensions are: {}'.format(np.shape(operator)))
     else:
@@ -70,7 +68,8 @@ def ifu_math(array_in, operator, method):
         return
     else:
         print('(math): Input array has {} dimensions.'.format(array_in.ndim))
-    
+        
+            
     # ... and check dimensions of input and operator arrays    
     if operator.ndim == 1 and operator.shape[0] == 1:
         print('(math): A scalar operation will take place.')
@@ -111,3 +110,6 @@ def ifu_math(array_in, operator, method):
         array_out = np.array([])
     
     return array_out
+
+if __name__ == "__main__":
+    math(array_in, operator, method)

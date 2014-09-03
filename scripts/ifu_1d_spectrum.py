@@ -6,10 +6,10 @@ import matplotlib.cm as cm
 
 import sys
 sys.path.append('./scripts/')
-from ifu_math import *
-from ifu_utils import *
+from ifu_math import math
+from ifu_utils import frame_convert, wave_convert
 
-def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=False):
+def extractSpectrum(array_in, spaxel, cals, trim=100, continuum=False, display=False):
     """
     Extract the spectrum of a gixen spaxel from a given datacube.
     
@@ -20,7 +20,9 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
                
     spaxel : list of ints, [[x, y]] or [[x1, y1], [x2, y2] ... [xn, yn]]
              The spaxel(s) (i.e., the [x, y] pixel location) for 
-             which to perform the extraction.
+             which to perform the extraction. Can also be entered as a 
+             list of seperate x and y values; list is resized internally:
+             i.e., [[x1, x2, ... xn], [y1, y2, ... yn]]
              
     cals : list of floats
            Calibration values for the input datacube; 
@@ -40,9 +42,10 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     Returns
     -------
     spectrum_out : numpy.ndarray
-               The extracted spectrum. The output is a 2d array, 
-               where spectrum_out[0, :] is the wavelength (in $/mu $m) 
-               and spectrum_out[1, :] is the counts (in D/N).
+               The extracted spectrum. The output is a 2d array, where:
+               spectrum_out[0, :] is the wavelength (in $/mu $m),
+               spectrum_out[1, :] is the counts (in D/N),
+               spectrum_out[2, :] is the associated frame.
     """
         
     # Convert spaxel(s) to numpy arrays to evaluate how many are input, 
@@ -122,13 +125,16 @@ def ifu_1d_spectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
     # Create an empty multidim array to store the spectral data
     # (wavelength and flux)
     # If multiple spaxles are entered, only the first is returned!    
-    spectrum_out = np.empty(2*spectrum.shape[0]).reshape(2, spectrum.shape[0])
+    spectrum_out = np.empty(3*spectrum.shape[0]).reshape(3, spectrum.shape[0])
     spectrum_out[0, :] = spec_wave
-    #spectrum_out[1, :] = spectrum
+    spectrum_out[1, :] = spec_frame
     
     if len(spectrum.shape) != 1:
-        spectrum_out[1, :] = spectrum[:, 0]
+        spectrum_out[2, :] = spectrum[:, 0]
     else:
-        spectrum_out[1, :] = spectrum
+        spectrum_out[2, :] = spectrum
                 
     return spectrum_out
+
+if __name__ == "__main__":
+    extractSpectrum(array_in, spaxel, cals, trim=100, continuum=False, display=False)

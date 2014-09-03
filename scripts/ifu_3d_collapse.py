@@ -2,10 +2,6 @@
 from __future__ import print_function
 import numpy as np
 
-import sys
-sys.path.append('./scripts/')
-from ifu_math import *
-
 def _arrayCollapse(array_in, method):
     """
     Collapse a slice of a datacube, with a given mode, along the wavelength (z) slice.
@@ -86,7 +82,7 @@ def _maskedCollapse(array_in, method):
     return collapsed_array.data
 
 
-def ifu_3d_collapse(array_in, region=None, method='sum', sigma=False):
+def collapse(array_in, region=None, method='sum', sigma=False):
     """
     Collapse a slice of a datacube, with a given mode, along the 
     wavelength slice.
@@ -156,3 +152,6 @@ def ifu_3d_collapse(array_in, region=None, method='sum', sigma=False):
     # Returns the collapsed array
     #print('(3d_collapse): Shape of returned array:', collapsed_array.shape)
     return collapsed_array
+
+if __name__ == "__main__":
+    collapse(array_in, region=None, method='sum', sigma=False)
