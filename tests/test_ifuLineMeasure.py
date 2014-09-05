@@ -32,7 +32,7 @@ def test_inputSpectra():
     """
     
     testSpec = extractSpectrum(cube, [[30,30]], cals, trim=100, continuum=False, display=False)
-    line = lineMeasure(testSpec, region=[800, 1200])
+    line = lineMeasure(testSpec, region=[1.72, 1.77])
     assert len(line) > 0 and line[0] != 0
     
     
@@ -43,4 +43,4 @@ def test_inputRange():
     
     testSpec = extractSpectrum(cube, [[30,30]], cals, trim=100, continuum=False, display=False)
     line = lineMeasure(testSpec, region=[3000, 3100])
-    assert line == 0
+    assert line == []
