@@ -4,6 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
+from astropy.modeling import models, fitting
+
 import sys
 sys.path.append('./scripts/')
 from ifu_utils import frame_convert, wave_convert
@@ -40,29 +42,66 @@ def lineMeasure(spectrum, region=[], display=False):
     """
     # Initialize the output spectrum
     # If zero, then something went wrong!
-    line = 0
+    line, inSpectrum = [], []
     
-    idx, = np.where(spectrum[1, :] == region[0])
-    print(idx, type(idx))
-    
-    if len(idx) == 0:
-        print('Input range is outside allowed!')
+    idx, = np.where((spectrum[0, :] >= region[0]) & (spectrum[0, :] <= region[1]))
+
+    if region[0] >= spectrum[0, 0] and region[1] <= spectrum[0, -1]:
+        print('Indeces: ', idx[0], idx[-1])
+        print('Wavelength range: ', spectrum[0, idx[0]], spectrum[0, idx[-1]])
+        inWave = spectrum[0, idx[0]:idx[-1]]
+        inFrame = spectrum[1, idx[0]:idx[-1]]
+        inSpectrum = spectrum[2, idx[0]:idx[-1]]
+        
+    else:    
+        print('Wavelength range is outside that available:')
+        print('Input spectrum range: ', spectrum[0, 0], spectrum[0, -1])
         return line
-    else:
-        idx_range = region[1] - region[0]        
+
+
+    # Initial parameter guesses
+    amp_0 = inSpectrum.max()
+    index, = np.where(inSpectrum == amp_0)
+    mean_0 = inWave[index[0]]
+
+
+    # Fit the data using a Gaussian
+    g_init = models.Gaussian1D(amplitude=0., mean=mean_0, stddev=3.)
+    fit_g = fitting.LevMarLSQFitter()
+    g = fit_g(g_init, inWave, inSpectrum)
+
+    print(g)
+    
+    
+    # Display spectrum if set (DEBUG)
+    if display:
         
-    
-    if spectrum.shape[0] != 3:
-        print("Spectrum must be of shape (3, n), when n = number of wavelengths/counts in spectrum!")
+        fig, ax = plt.subplots(figsize=(12, 4))
+        ax.plot(inWave, inSpectrum, color='green', lw=2., label = 'Spectrum')
         
-        return inSpectrum
+        
+        # Plot gaussian fit
+        ax.plot(inWave, g(inWave), color='red', lw=1., label='Gauss')
+        xl = g.mean.value
+        yl = ax.get_ylim()
+        ax.plot([xl, xl], yl, color='black', lw=1.5, ls='--', label='Line Location')
+        print('Limits: ', g.mean.value, yl)
+        
+        ax.set_xlim(inWave[0], inWave[-1])
+        ax.set_xlabel('Wavelength ($\mu m$)')
+        ax.set_ylabel('Counts (D/n)')
+        
+        ax_twin = ax.twiny()
+        ax_twin.set_xlim(inFrame[0], inFrame[-1])
+        ax_twin.set_xlabel('Datacube Frame')
+
+        # Now add the legend with some customizations.
+        ax.legend(loc='best', numpoints = 1, shadow=True)
+
     
-    if len(region) == 2:
-        inSpectrum = spectrum[2, idx:idx+idx_range]
-    else:
-        print('The spectral region must be entered as [a, b], where a and b are the lower/upper limits!')
-    
-    line = inSpectrum
+    line = np.empty(2*len(inWave)).reshape(2, len(inWave))
+    line[0, :] = inWave
+    line[1, :] = inSpectrum
     return line
 
 
