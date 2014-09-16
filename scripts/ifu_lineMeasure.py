@@ -11,23 +11,29 @@ sys.path.append('./scripts/')
 from ifu_utils import frame_convert, wave_convert
 
 
-def lineMeasure(spectrum, region=[], display=False):
+def lineMeasure(x, y, f=None, region=None, continuum=None, display=False):
     """
     Measure the line (if present) in a given region of an 
     input spectrum.
     
     Parameters
     ----------
-    spectrum : 2D numpy.ndarray
-               Input spectrum as a 2D array; 
-               spectrum[0] = wavelength
-               spectrum[1] = frames
-               spectrum[2] = counts
-               
+    x : array
+        The wavelength array of the input spectrum (in $\mu$m)
+        
+    y : array
+        The spectrum counts array
+        
+    f : array, optional
+        The frame array that corresponts to the input 
+        wavelength (default is None.)
+                       
     region : list of ints, optional
              The region for which to measure the line.
-             (default is [], in which the entire spectrum
+             (default is None, in which the entire spectrum
              is used.)
+             
+    continnum : string         
              
     display : bool, optinal
               Display the line with diagnostic values.
@@ -44,26 +50,27 @@ def lineMeasure(spectrum, region=[], display=False):
     # If zero, then something went wrong!
     line, inSpectrum = [], []
     
-    idx, = np.where((spectrum[0, :] >= region[0]) & (spectrum[0, :] <= region[1]))
+    index, = np.where((x >= region[0]) & (x <= region[1]))
 
-    if region[0] >= spectrum[0, 0] and region[1] <= spectrum[0, -1]:
-        print('Indeces: ', idx[0], idx[-1])
-        print('Wavelength range: ', spectrum[0, idx[0]], spectrum[0, idx[-1]])
-        inWave = spectrum[0, idx[0]:idx[-1]]
-        inFrame = spectrum[1, idx[0]:idx[-1]]
-        inSpectrum = spectrum[2, idx[0]:idx[-1]]
+    if region[0] >= x[0] and region[1] <= x[-1]:
+        print('Indeces: ', index[0], index[-1])
+        print('Wavelength range: ', x[index[0]], x[index[-1]])
+        inWave = x[index[0]:index[-1]]
+        inSpectrum = y[index[0]:index[-1]]
+        
+        # If a frame array is available, assign range as well
+        if f != None: inFrame = f[index[0]:index[-1]]
         
     else:    
         print('Wavelength range is outside that available:')
-        print('Input spectrum range: ', spectrum[0, 0], spectrum[0, -1])
+        print('Input spectrum range: ', x[index[0]], x[index[-1]])
         return line
 
 
-    # Initial parameter guesses
+    # Initial gaussian fit parameter guesses
     amp_0 = inSpectrum.max()
     index, = np.where(inSpectrum == amp_0)
     mean_0 = inWave[index[0]]
-
 
     # Fit the data using a Gaussian
     g_init = models.Gaussian1D(amplitude=0., mean=mean_0, stddev=3.)
@@ -81,7 +88,7 @@ def lineMeasure(spectrum, region=[], display=False):
         
         
         # Plot gaussian fit
-        ax.plot(inWave, g(inWave), color='red', lw=1., label='Gauss')
+        ax.plot(inWave, g(inWave), color='red', lw=1., label='Gauss Fit')
         xl = g.mean.value
         yl = ax.get_ylim()
         ax.plot([xl, xl], yl, color='black', lw=1.5, ls='--', label='Line Location')
@@ -91,9 +98,10 @@ def lineMeasure(spectrum, region=[], display=False):
         ax.set_xlabel('Wavelength ($\mu m$)')
         ax.set_ylabel('Counts (D/n)')
         
-        ax_twin = ax.twiny()
-        ax_twin.set_xlim(inFrame[0], inFrame[-1])
-        ax_twin.set_xlabel('Datacube Frame')
+        if f != None:
+            ax_twin = ax.twiny()
+            ax_twin.set_xlim(inFrame[0], inFrame[-1])
+            ax_twin.set_xlabel('Datacube Frame')
 
         # Now add the legend with some customizations.
         ax.legend(loc='best', numpoints = 1, shadow=True)
