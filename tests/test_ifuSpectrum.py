@@ -29,7 +29,7 @@ def test_extractSpaxel():
     1. Test the spectrum extraction function on a single spaxel.
     """
     
-    testSpec = extractSpectrum(cube, [[30,30]], cals, trim=100, continuum=False, display=False)
+    testSpec = extractSpectrum(cube, [[30,30]], cals, trim=[100, 100], continuum=False, display=False)
     assert testSpec.shape[0] == 3 and isinstance(testSpec, np.ndarray)
     
 
@@ -56,7 +56,7 @@ def test_extractLists():
     Test passes, but as a list of spaxels (list of [[x1, x2, ... xn], [y1, y2, ... yn]]).
     """
     
-    testSpec = extractSpectrum(cube, [[27,33,30],[27,33,30]], cals, trim=100, continuum=False, display=False)
+    testSpec = extractSpectrum(cube, [[27,33,30],[27,33,30]], cals, trim=[100, 100], continuum=False, display=False)
     assert testSpec.shape[0] == 3 and isinstance(testSpec, np.ndarray)
     
 def test_extractPairs():
@@ -66,7 +66,7 @@ def test_extractPairs():
     Test passes, but as pairs of lists (list of [[x1, y1], [x2, y2] ...[xn, yn]]).
     """
     
-    testSpec = extractSpectrum(cube, [[27, 27], [33, 33], [15, 30]], cals, trim=100, continuum=False, display=False)
+    testSpec = extractSpectrum(cube, [[27, 27], [33, 33], [15, 30]], cals, trim=[100, 100], continuum=False, display=False)
     assert testSpec.shape[0] == 3 and isinstance(testSpec, np.ndarray)
     
 def test_extractPairsContinuum():
@@ -77,5 +77,5 @@ def test_extractPairsContinuum():
     Continuum extraction is performed.
     """
     
-    testSpec = extractSpectrum(cube, [[27, 27], [33, 33], [15, 30]], cals, trim=100, continuum=True, display=False)
+    testSpec = extractSpectrum(cube, [[27, 27], [33, 33], [15, 30]], cals, trim=[100, 100], continuum=True, display=False)
     assert testSpec.shape[0] == 3 and isinstance(testSpec, np.ndarray)
