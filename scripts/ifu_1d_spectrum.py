@@ -9,7 +9,7 @@ sys.path.append('./scripts/')
 from ifu_math import math
 from ifu_utils import frame_convert, wave_convert
 
-def extractSpectrum(array_in, spaxel, cals, trim=100, continuum=False, display=False):
+def extractSpectrum(array_in, spaxel, cals, trim=[100, 100], continuum=False, display=False):
     """
     Extract the spectrum of a gixen spaxel from a given datacube.
     
@@ -73,13 +73,13 @@ def extractSpectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
 
     # Extract spectrum at given spaxel, trimming from beginning/end of spectrum
     #spectrum = array_in[trim:-trim, spaxel[1], spaxel[0]]
-    spectrum = array_in[trim:-trim, y[:specLimit], x[:specLimit]]
+    spectrum = array_in[trim[0]:-trim[1], y[:specLimit], x[:specLimit]]
     if spectrum.shape[1] == 1:
         spectrum = spectrum[:, 0]
     
-    spec_frame = np.arange(len(spectrum)) + trim    
+    spec_frame = np.arange(len(spectrum)) + trim[0]    
     spec_wave = frame_convert(spec_frame, cals)
-        
+            
     # If a continuum-subtracted spectrum is required, calculate
     # and return...
     if continuum:                
@@ -97,15 +97,17 @@ def extractSpectrum(array_in, spaxel, cals, trim=100, continuum=False, display=F
         # Compute continuum-subtracted spectrum
         spectrum = spectrum - continuum
         
-    # Display spectrum if set (DEBUG)
+    # Display spectrum if keyword set
     if display:
         
         fig, ax = plt.subplots(figsize=(12, 4))
-
+        
+        # For multiple spaxels, plot them recursively...
         if len(x) > 1:
             for rec, pos in enumerate(npSpaxels):
                 ax.plot(spec_wave, spectrum[:, rec], label='[{}, {}]'.format(pos[0], pos[1]))
         else:
+            # ... else plot the only one available.
             ax.plot(spec_wave, spectrum, label='[{}, {}]'.format(x[0], y[0]))
         
         
