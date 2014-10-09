@@ -33,7 +33,10 @@ def lineMeasure(x, y, f=None, region=None, continuum=None, display=False):
              (default is None, in which the entire spectrum
              is used.)
              
-    continnum : string         
+    continnum : string
+                Method for continuum subtraction. Available will
+                be 'linear', 'poly2', and 'polyn' (defaults to 
+                'linear').
              
     display : bool, optinal
               Display the line with diagnostic values.
@@ -66,6 +69,25 @@ def lineMeasure(x, y, f=None, region=None, continuum=None, display=False):
         print('Input spectrum range: ', x[index[0]], x[index[-1]])
         return line
 
+#    #if continuum == 'linear':
+#    #
+#    # If a continuum-subtracted spectrum is required, calculate
+#    # and return...
+#    if continuum:                
+#        pTemp = np.polyfit(spec_wave, spectrum, 1)
+#        
+#        if spectrum.ndim == 1:
+#            p = pTemp
+#            continuum = p[0] * spec_wave + p[1]
+#        else:
+#            p = pTemp.T
+#            continuum = np.zeros(spectrum.shape)
+#            for rec, pfit in enumerate(p):
+#                continuum[:, rec] = pfit[0] * spec_wave + pfit[1]
+#
+#        # Compute continuum-subtracted spectrum
+#        spectrum = spectrum - continuum
+
 
     # Initial gaussian fit parameter guesses
     amp_0 = inSpectrum.max()
@@ -77,8 +99,7 @@ def lineMeasure(x, y, f=None, region=None, continuum=None, display=False):
     fit_g = fitting.LevMarLSQFitter()
     g = fit_g(g_init, inWave, inSpectrum)
 
-    print(g)
-    
+    print(g)    
     
     # Display spectrum if set (DEBUG)
     if display:

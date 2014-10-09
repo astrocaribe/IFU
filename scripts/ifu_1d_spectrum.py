@@ -70,10 +70,10 @@ def extractSpectrum(array_in, spaxel, cals, trim=[100, 100], continuum=False, di
     if npSpaxels.shape[0] > specLimit:
         print('Too many spectra entered! Maximum of 3 will be processed...')
 
-
     # Extract spectrum at given spaxel, trimming from beginning/end of spectrum
     #spectrum = array_in[trim:-trim, spaxel[1], spaxel[0]]
     spectrum = array_in[trim[0]:-trim[1], y[:specLimit], x[:specLimit]]
+    
     if spectrum.shape[1] == 1:
         spectrum = spectrum[:, 0]
     
