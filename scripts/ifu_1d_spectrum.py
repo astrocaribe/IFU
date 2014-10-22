@@ -9,7 +9,7 @@ sys.path.append('./scripts/')
 from ifu_math import math
 from ifu_utils import frame_convert, wave_convert
 
-def extractSpectrum(array_in, spaxel, cals, trim=[100, 100], continuum=False, display=False):
+def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, display=False):
     """
     Extract the spectrum of a gixen spaxel from a given datacube.
     
@@ -28,8 +28,8 @@ def extractSpectrum(array_in, spaxel, cals, trim=[100, 100], continuum=False, di
            Calibration values for the input datacube; 
            (crpix, crval, crdelt).
            
-    trim : int
-           Integer amount to trim from begin/end of the datacube.
+    region : list of int, [begin, end]
+             Region of datacube to extract.
            
     continuum : bool, optional
                 Perforn a continuum subtraction (default is False, 
@@ -70,14 +70,20 @@ def extractSpectrum(array_in, spaxel, cals, trim=[100, 100], continuum=False, di
     if npSpaxels.shape[0] > specLimit:
         print('Too many spectra entered! Maximum of 3 will be processed...')
 
+    # If an initial region is input then set the begin/end...
+    if region:
+        begin, end = region
+    else:
+        # ...else extract the entire spectrum w/o trimming
+        begin, end = [0, -1]
+        
     # Extract spectrum at given spaxel, trimming from beginning/end of spectrum
-    #spectrum = array_in[trim:-trim, spaxel[1], spaxel[0]]
-    spectrum = array_in[trim[0]:-trim[1], y[:specLimit], x[:specLimit]]
+    spectrum = array_in[begin:end, y[:specLimit], x[:specLimit]]
     
     if spectrum.shape[1] == 1:
         spectrum = spectrum[:, 0]
     
-    spec_frame = np.arange(len(spectrum)) + trim[0]    
+    spec_frame = np.arange(len(spectrum)) + begin    
     spec_wave = frame_convert(spec_frame, cals)
             
     # If a continuum-subtracted spectrum is required, calculate
@@ -139,4 +145,4 @@ def extractSpectrum(array_in, spaxel, cals, trim=[100, 100], continuum=False, di
     return spectrum_out
 
 if __name__ == "__main__":
-    extractSpectrum(array_in, spaxel, cals, trim=100, continuum=False, display=False)
+    extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, display=False)
