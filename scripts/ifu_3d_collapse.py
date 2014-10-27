@@ -16,7 +16,7 @@ def _arrayCollapse(array_in, method):
                Input array over which to calculate the collapse.
     
     method : string
-             Passed from the main function call.
+             Passed from the main function call. Options are sum, mean, and median.
              
     Returns
     -------
