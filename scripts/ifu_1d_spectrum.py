@@ -9,7 +9,7 @@ sys.path.append('./scripts/')
 from ifu_math import math
 from ifu_utils import frame_convert, wave_convert
 
-def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, display=False):
+def extractSpectrum(array_in, spaxel, cals, region=None, iscontinuum=False, display=False):
     """
     Extract the spectrum of a gixen spaxel from a given datacube.
     
@@ -31,9 +31,9 @@ def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, displa
     region : list of int, [begin, end]
              Region of datacube to extract.
            
-    continuum : bool, optional
-                Perforn a continuum subtraction (default is False, 
-                no continuum subtraction is done).
+    iscontinuum : bool, optional
+                  Perforn a continuum subtraction (default is False, 
+                  no continuum subtraction is done).
     
     display : bool, optional
               Display the extracted spectrum (default is False,
@@ -44,8 +44,8 @@ def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, displa
     spectrum_out : numpy.ndarray
                The extracted spectrum. The output is a 2d array, where:
                spectrum_out[0, :] is the wavelength (in $/mu $m),
-               spectrum_out[1, :] is the counts (in D/N),
-               spectrum_out[2, :] is the associated frame.
+               spectrum_out[1, :] is the associated frame,
+               spectrum_out[2, :] is the counts (in D/N).
     """
         
     # Convert spaxel(s) to numpy arrays to evaluate how many are input, 
@@ -53,7 +53,6 @@ def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, displa
     spaxelList = np.array(spaxel)
     if spaxelList.shape[1] > 2:
         print('Input spaxels not in the right form. Resizing....')
-        #npSpaxels = np.resize(spaxelList, (spaxelList.shape[1], spaxelList.shape[0]))
         npSpaxels = spaxelList.T
         print('Resizing done!')
         print()
@@ -88,7 +87,7 @@ def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, displa
             
     # If a continuum-subtracted spectrum is required, calculate
     # and return...
-    if continuum:                
+    if iscontinuum:                
         pTemp = np.polyfit(spec_wave, spectrum, 1)
         
         if spectrum.ndim == 1:
@@ -115,11 +114,14 @@ def extractSpectrum(array_in, spaxel, cals, region=None, continuum=False, displa
         else:
             # ... else plot the only one available.
             ax.plot(spec_wave, spectrum, label='[{}, {}]'.format(x[0], y[0]))
-        
-        
+                
         ax.set_xlim(spec_wave[0], spec_wave[-1])
         ax.set_xlabel('Wavelength ($\mu m$)')
         ax.set_ylabel('Counts (D/n)')
+        
+        # Dashed zero line for reference (only for continuum subtracted spectra)
+        if iscontinuum:
+            ax.plot((spec_wave[0], spec_wave[-1]), (0., 0.), ls='--', color='black')
         
         ax_twin = ax.twiny()
         ax_twin.set_xlim(spec_frame[0], spec_frame[-1])
