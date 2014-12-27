@@ -1,2 +1,9 @@
-# Ignore the virtualenv directory
+# Autoenv file
+.env
+
+# Virtualenv directory
 venv/
+
+# Python compiled modules
+*.pyc
+
