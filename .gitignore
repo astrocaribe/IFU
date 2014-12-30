@@ -1,14 +1,14 @@
 # Autoenv file
 .env
 
-# Virtualenv directory
-venv/
-
 # Python compiled modules
 *.pyc
 
 # Data directory
 data/
+
+# Sublime project files
+proj/
 
 # Pesky OS X dot files
 .DS_Store
